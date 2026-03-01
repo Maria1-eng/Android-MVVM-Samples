@@ -23,8 +23,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -56,6 +58,19 @@ fun ScreenList() {
 //    // crea una nueva lista, Compose observa el cambio.
 //    // Importante mutableStateOf no sabe que hay en la lista solo la referencia.
 //    // Si crearas una mutable dentro y quisieras ocupar los comando como list.add() no podrias porque mutableSTateOf no sabe que hay dentro.
+//
+//
+//
+//    MutableStateOf Guarda un valor. Notifica a Compose cuando ese valor cambia
+//Compose detecta que ese estado cambió. Se vuelve a ejecutar (recomponer) la función composable que usa ese estado.
+//La UI se actualiza automáticamente.
+//    Recomposición (Recomposition)
+// Compose:  Vuelve a ejecutar solo las funciones que leen ese estado.
+// No reconstruye toda la pantalla.
+//Solo actualiza la parte necesaria.
+//
+//
+//
 //    LazyColumn(
 //        modifier
 //            .fillMaxSize()
@@ -81,68 +96,82 @@ fun ScreenList() {
 //}
 
 
+//@Composable
+//fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
+//
+//    val list by viewModel.list.collectAsStateWithLifecycle()
+//    val text by viewModel.text.collectAsStateWithLifecycle()
+//    Column(
+//        modifier
+//            .fillMaxSize()
+//            .safeContentPadding()
+//    ) {
+//        LazyColumn(
+//            modifier
+//                .weight(1f)
+//                .fillMaxSize(),
+//            horizontalAlignment = Alignment.CenterHorizontally
+//        ) {
+//            itemsIndexed(list) { index, item ->
+//                Row(
+//                    modifier = Modifier
+//                        .padding(4.dp)
+//                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 6.dp),
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(text = " ${index + 1}  $item") // el align que podria pone aqui solo funciona dentro de un text. No con column o row, text no tiene dimensiones como box por eso no se puede.
+//                    IconButton(onClick = { viewModel.Remove(index) }) {
+//                        Icon(
+//                            imageVector = Icons.Default.Close,
+//                            contentDescription = "Remove"
+//                        )
+//                    }
+//                }
+//
+//            }
+//
+//
+//        }
+//        Row(
+//            modifier = modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.SpaceBetween,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            TextField(
+//                value = text,
+//                onValueChange = {newText -> viewModel.OnClickChanged(newText)},
+//                enabled = true,
+//                placeholder = { Text("Nueva tarea") })
+//            Box() {
+//                FloatingActionButton(
+//                    onClick = { viewModel.Add() },
+//                    modifier = Modifier.align(Alignment.BottomEnd) // Box trabaja en dos dimensiones por eso hay que especificar si es bottom.End, center.End, top.End
+//                ) {
+//                    Icon(Icons.Default.Add, contentDescription = "Agregar")
+//                }
+////        Button(modifier = modifier.align(Alignment.CenterEnd),onClick = {}) {
+////            Text("+")
+////        }
+//
+//            }
+//        }
+//
+//
+//    }
+//}
+
 @Composable
 fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
-    val list by viewModel.list.collectAsStateWithLifecycle()
-    val text by viewModel.text.collectAsStateWithLifecycle()
-    Column(
-        modifier
-            .fillMaxSize()
-            .safeContentPadding()
-    ) {
-        LazyColumn(
-            modifier
-                .weight(1f)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            itemsIndexed(list) { index, item ->
-                Row(
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .background(MaterialTheme.colorScheme.tertiaryContainer)
-                        .fillMaxWidth()
-                        .padding(horizontal = 6.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = " ${index + 1}  $item") // el align que podria pone aqui solo funciona dentro de un text. No con column o row, text no tiene dimensiones como box por eso no se puede.
-                    IconButton(onClick = { viewModel.Remove(index) }) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Remove"
-                        )
-                    }
-                }
-
+    Scaffold(
+        modifier = Modifier.safeContentPadding(),
+        topBar = { TopAppBar()},
+        floatingActionButton = {
+            FloatingActionButton(onClick = {}) {
+                Icon(imageVector = Icons.Default.Add,
+                    contentDescription = "Agregar")
             }
-
-
-        }
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextField(
-                value = text,
-                onValueChange = {newText -> viewModel.OnClickChanged(newText)},
-                enabled = true,
-                placeholder = { Text("Nueva tarea") })
-            Box() {
-                FloatingActionButton(
-                    onClick = { viewModel.Add() },
-                    modifier = Modifier.align(Alignment.BottomEnd) // Box trabaja en dos dimensiones por eso hay que especificar si es bottom.End, center.End, top.End
-                ) {
-                    Icon(Icons.Default.Add, contentDescription = "Agregar")
-                }
-//        Button(modifier = modifier.align(Alignment.CenterEnd),onClick = {}) {
-//            Text("+")
-//        }
-
-            }
-        }
-
-
-    }
+        }) { }
 }
