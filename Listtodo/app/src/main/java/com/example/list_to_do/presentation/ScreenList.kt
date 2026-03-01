@@ -1,5 +1,6 @@
 package com.example.list_to_do.presentation
 
+import android.R.attr.horizontalDivider
 import android.graphics.Paint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,11 +16,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +33,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -34,10 +41,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
@@ -163,15 +174,64 @@ fun ScreenList() {
 //    }
 //}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
+    val list by viewModel.list.collectAsStateWithLifecycle()
     Scaffold(
         modifier = Modifier.safeContentPadding(),
-        topBar = { TopAppBar()},
+        topBar = {
+            TopAppBar(
+                title = { Text("Lista de tareas", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary,
+                    titleContentColor = MaterialTheme.colorScheme.onTertiary
+                )
+            )
+        },
+        bottomBar =  { Text("Hola")},
         floatingActionButton = {
-            FloatingActionButton(onClick = {}) {
-                Icon(imageVector = Icons.Default.Add,
-                    contentDescription = "Agregar")
+            FloatingActionButton(
+                onClick = {},
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = MaterialTheme.colorScheme.onTertiary //FloatingActionButtonDefaults.containerColor
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Agregar"
+                )
             }
-        }) { }
+        } ) { innerPadding ->
+        Column(Modifier.padding(innerPadding), verticalArrangement = Arrangement.spacedBy(50.dp)) {
+        LazyColumn(
+            modifier = Modifier.weight(1f).clip(RoundedCornerShape(bottomStart = 24.dp,
+                    bottomEnd = 24.dp))
+                .fillMaxSize().background(MaterialTheme.colorScheme.tertiaryContainer),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            itemsIndexed(list) { index, item ->
+                Row(
+                    modifier.fillMaxWidth().padding(start = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box() { // Row es el padre toda la linea horizontal y lo llenas con los siguientes contenedores
+                        // Si quisieras otra fila simplemente agregas otro row abajo de este (no dentro) y dentro de una columna
+                        Text("${index + 1}  $item")
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Default.Close, contentDescription = "Remove")
+                    }
+                }
+                HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onTertiary.copy(0.5f))
+            }
+
+
+        }
+        Box(){
+        Text("Hola")}}
+
+
+    }
+
 }
