@@ -22,6 +22,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -178,6 +180,7 @@ fun ScreenList() {
 @Composable
 fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
     val list by viewModel.list.collectAsStateWithLifecycle()
+    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
     Scaffold(
         modifier = Modifier.safeContentPadding(),
         topBar = {
@@ -215,13 +218,14 @@ fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box() { // Row es el padre toda la linea horizontal y lo llenas con los siguientes contenedores
+                     // Row es el padre toda la linea horizontal y lo llenas con los siguientes contenedores
                         // Si quisieras otra fila simplemente agregas otro row abajo de este (no dentro) y dentro de una columna
-                        Text("${index + 1}  $item")
-                    }
+                        Text("${index + 1}  ${item.name}")
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically){
+                    Checkbox(onCheckedChange = {viewModel.onCheckBox(index)}, checked = enabled, colors = CheckboxDefaults.colors(checkmarkColor = MaterialTheme.colorScheme.onTertiary, checkedColor = MaterialTheme.colorScheme.tertiary))
                     IconButton(onClick = {}) {
                         Icon(imageVector = Icons.Default.Close, contentDescription = "Remove")
-                    }
+                    }}
                 }
                 HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onTertiary.copy(0.5f))
             }
