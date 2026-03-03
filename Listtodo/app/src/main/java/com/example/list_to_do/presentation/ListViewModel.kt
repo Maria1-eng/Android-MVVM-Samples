@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class ListViewModel(): ViewModel() { // Estoy creando una clase llamada ListViewModel que es un tipo de ViewModel, Estoy HEREDANDO las cosas de ViewModel
     // ambas son clases y : es herencia
-    private val _list = MutableStateFlow(listOf(ListModel("barrer"),
+    private val _list = MutableStateFlow(listOf(ListModel("barrer"), // ListModel es una data class que guarda el nombre y si tiene palomita o no
         ListModel("cuidar a merli"),
         ListModel("limpiar cocina"), ListModel(" tirar basura")))
     val list= _list.asStateFlow()
@@ -16,8 +16,8 @@ class ListViewModel(): ViewModel() { // Estoy creando una clase llamada ListView
     private val _text = MutableStateFlow("")
     val text = _text.asStateFlow()
 
-    private val _enabled = MutableStateFlow(false)
-    val enabled = _enabled.asStateFlow()
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog = _showDialog.asStateFlow()
 
 
     fun Remove(index: Int){
@@ -48,4 +48,13 @@ class ListViewModel(): ViewModel() { // Estoy creando una clase llamada ListView
         )
         _list.value = currentList
 
-    }}
+    }
+    fun openDialog() {
+        _showDialog.value = true
+    }
+
+    fun closeDialog() {
+        _showDialog.value = false
+    }
+
+}

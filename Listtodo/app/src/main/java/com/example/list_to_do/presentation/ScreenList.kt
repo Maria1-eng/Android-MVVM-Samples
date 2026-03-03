@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
@@ -33,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -180,7 +182,8 @@ fun ScreenList() {
 @Composable
 fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
     val list by viewModel.list.collectAsStateWithLifecycle()
-    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
+    val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
+    val text by viewModel.text.collectAsStateWithLifecycle()
     Scaffold(
         modifier = Modifier.safeContentPadding(),
         topBar = {
@@ -192,10 +195,9 @@ fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
                 )
             )
         },
-        bottomBar =  { Text("Hola")},
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = {viewModel.openDialog()},
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 contentColor = MaterialTheme.colorScheme.onTertiary //FloatingActionButtonDefaults.containerColor
             ) {
@@ -204,36 +206,87 @@ fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
                     contentDescription = "Agregar"
                 )
             }
-        } ) { innerPadding ->
+        }) { innerPadding ->
         Column(Modifier.padding(innerPadding), verticalArrangement = Arrangement.spacedBy(50.dp)) {
-        LazyColumn(
-            modifier = Modifier.weight(1f).clip(RoundedCornerShape(bottomStart = 24.dp,
-                    bottomEnd = 24.dp))
-                .fillMaxSize().background(MaterialTheme.colorScheme.tertiaryContainer),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            itemsIndexed(list) { index, item ->
-                Row(
-                    modifier.fillMaxWidth().padding(start = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                     // Row es el padre toda la linea horizontal y lo llenas con los siguientes contenedores
+            if (showDialog){
+                AlertDialog( onDismissRequest = { viewModel.closeDialog() },
+                title = { Text("Agregar nueva tarea") },
+                text = {
+                    TextField(
+                        value = text,
+                        onValueChange = { viewModel.OnClickChanged(it) },
+                        placeholder = { Text("Escribe la tarea") }
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.Add()
+                            viewModel.closeDialog()
+                        }
+                    ) { Text("Agregar") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { viewModel.closeDialog() }) {
+                        Text("Cancelar")
+                    }
+                }
+                )
+            }
+            LazyColumn(
+                modifier = Modifier
+                    .clip(
+                        RoundedCornerShape(
+                            bottomStart = 24.dp,
+                            bottomEnd = 24.dp
+                        )
+                    )
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.tertiaryContainer),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                itemsIndexed(list) { index, item -> // la funcion se llama itemsIndexed lo que sucede dentro es que saca los indices y el nombre
+                    // de cada item y te los devuelve mediante index, item. Le entregas la lista y la accion que hara con index e item que es lo de abajo.
+                    Row(
+                        modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Row es el padre toda la linea horizontal y lo llenas con los siguientes contenedores
                         // Si quisieras otra fila simplemente agregas otro row abajo de este (no dentro) y dentro de una columna
                         Text("${index + 1}  ${item.name}")
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically){
-                    Checkbox(onCheckedChange = {viewModel.onCheckBox(index)}, checked = enabled, colors = CheckboxDefaults.colors(checkmarkColor = MaterialTheme.colorScheme.onTertiary, checkedColor = MaterialTheme.colorScheme.tertiary))
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Remove")
-                    }}
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                onCheckedChange = { viewModel.onCheckBox(index) },
+                                checked = item.checked,
+                                colors = CheckboxDefaults.colors(
+                                    checkmarkColor = MaterialTheme.colorScheme.onTertiary,
+                                    checkedColor = MaterialTheme.colorScheme.tertiary
+                                )
+                            )
+                            IconButton(onClick = { viewModel.Remove(index) }) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Remove"
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.onTertiary.copy(0.5f)
+                    )
                 }
-                HorizontalDivider(thickness = 2.dp, color = MaterialTheme.colorScheme.onTertiary.copy(0.5f))
+
+
             }
 
-
         }
-        Box(){
-        Text("Hola")}}
 
 
     }
