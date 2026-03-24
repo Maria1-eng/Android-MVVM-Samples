@@ -37,7 +37,8 @@ class ListViewModel(): ViewModel() { // Estoy creando una clase llamada ListView
             val currentList = _list.value.toMutableList()
             currentList.add(ListModel(name=text.value, checked = false))
         _list.value= currentList
-        _text.value =""}
+        _text.value =""
+        }
 
     }
     fun onCheckBox(index: Int){
@@ -55,6 +56,7 @@ class ListViewModel(): ViewModel() { // Estoy creando una clase llamada ListView
 
     fun closeDialog() {
         _showDialog.value = false
+        _text.value= ""
     }
 
 }
