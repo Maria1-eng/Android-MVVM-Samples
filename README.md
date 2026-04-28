@@ -5,7 +5,7 @@ Small Android apps built with Jetpack Compose and the MVVM pattern, using StateF
 ## Samples
 
 ### Login
-Login screen with real-time email and password validation. The login button enables only when both fields pass validation. Includes a loading state handled with coroutines.
+Login screen with real-time email and password validation. The login button enables only when both fields pass validation. Includes a loading state handled with coroutines and unit tests for the ViewModel using Robolectric.
 
 ### Listtodo
 To-do list with add, remove, and checkbox functionality. Organized with a dedicated presentation layer (ViewModel, Model, UI). Uses `LazyColumn`, `Scaffold`, and `AlertDialog`. Includes UI tests.
