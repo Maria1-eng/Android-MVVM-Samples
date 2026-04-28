@@ -48,6 +48,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -267,7 +269,11 @@ fun ScreenContent(modifier: Modifier, viewModel: ListViewModel) {
                                 colors = CheckboxDefaults.colors(
                                     checkmarkColor = MaterialTheme.colorScheme.onTertiary,
                                     checkedColor = MaterialTheme.colorScheme.tertiary
-                                )
+                                ),
+                                modifier = Modifier.semantics {
+                                    testTag = "$index check"
+
+                                }
                             )
                             IconButton(onClick = { viewModel.Remove(index) }) {
                                 Icon(
